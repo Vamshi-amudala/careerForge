@@ -1,0 +1,59 @@
+# ---------------------------
+# Maven / Java
+# ---------------------------
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.iml
+*.ipr
+*.iws
+
+# ---------------------------
+# Spring Boot
+# ---------------------------
+/spring-boot-devtools.properties
+spring.log
+
+# ---------------------------
+# IDEs
+# ---------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ---------------------------
+# OS files
+# ---------------------------
+.DS_Store
+Thumbs.db
+
+# ---------------------------
+# Environment / Secrets
+# ---------------------------
+.env
+*.env
+*.properties.local
+*.yml.local
+*.pem
+*.key
+*.crt
+
+# ---------------------------
+# Docker
+# ---------------------------
+# Dockerfile
+# docker-compose.override.yml
+# docker-compose.local.yml
+# docker-compose.debug.yml
+# *.dockerignore
+# *.docker
+
+# ---------------------------
+# Logs
+# ---------------------------
+*.log
+logs/
