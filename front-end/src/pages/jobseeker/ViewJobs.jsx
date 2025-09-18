@@ -13,7 +13,7 @@ export const ViewJobs = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/applications/available", {
+        const res = await axios.get("/api/applications/available", {
           withCredentials: true,
         });
         setJobs(Array.isArray(res.data) ? res.data : []);

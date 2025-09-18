@@ -13,7 +13,7 @@ export const UpdateProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/users/profile", {
+        const res = await axios.get("/users/profile", {
           withCredentials: true,
         });
         const data = res.data;
@@ -71,7 +71,7 @@ export const UpdateProfile = () => {
     setSaving(true);
     try {
       const res = await axios.put(
-        "http://localhost:8080/users/profile",
+        "/users/profile",
         formData,
         { withCredentials: true }
       );

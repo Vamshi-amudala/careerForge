@@ -23,7 +23,7 @@ export const UpdateProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/users/profile", { withCredentials: true });
+        const res = await axios.get("/users/profile", { withCredentials: true });
         setProfile(res.data);
       } catch (err) {
         setMessage("Failed to load profile.");
@@ -42,7 +42,7 @@ export const UpdateProfile = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await axios.put("http://localhost:8080/users/profile", profile, { withCredentials: true });
+      await axios.put("/users/profile", profile, { withCredentials: true });
       setMessage("Profile updated successfully!");
       alert("Profile updated successfully!");
       setTimeout(() => navigate("/employer-dashboard"), 1000);

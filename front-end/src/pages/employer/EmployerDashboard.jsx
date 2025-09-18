@@ -14,7 +14,7 @@ export const EmployerDashboard = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/jobs/my", {
+        const res = await axios.get("/api/jobs/my", {
           withCredentials: true,
         });
         setActiveJobs(res.data);
@@ -26,7 +26,7 @@ export const EmployerDashboard = () => {
     const fetchApplications = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8080/api/applications/employer",
+          "/api/applications/employer",
           { withCredentials: true }
         );
         setApplications(res.data);
@@ -37,7 +37,7 @@ export const EmployerDashboard = () => {
 
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/users/profile", {
+        const res = await axios.get("/users/profile", {
           withCredentials: true,
         });
         setProfile(res.data);

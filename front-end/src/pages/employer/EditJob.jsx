@@ -34,7 +34,7 @@ export const EditJob = () => {
     if (!jobId) return;
     const fetchJob = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/jobs/${jobId}`, { withCredentials: true });
+        const res = await axios.get(`/api/jobs/${jobId}`, { withCredentials: true });
         reset(res.data);
       } catch (error) {
         console.error(error);
@@ -49,7 +49,7 @@ export const EditJob = () => {
     if (!data.status) data.status = "OPEN";
 
     try {
-      await axios.put(`http://localhost:8080/api/jobs/${jobId}`, data, { withCredentials: true });
+      await axios.put(`/api/jobs/${jobId}`, data, { withCredentials: true });
       toast.success("Job updated successfully!");
      
       setTimeout(() => navigate("/manage-jobs"), 1000);

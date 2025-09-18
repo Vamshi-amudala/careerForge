@@ -30,7 +30,7 @@ export default function ForgotPassword() {
       setIsSubmitting(true);
 
       // Call your backend
-      const res = await fetch("http://localhost:8080/api/auth/forgot-password", {
+      const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

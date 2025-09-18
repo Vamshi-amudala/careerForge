@@ -9,7 +9,7 @@ export const Profile = () => {
 
   const loadProfile = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/users/profile", {
+      const res = await axios.get("/users/profile", {
         withCredentials: true,
       });
       setProfile(res.data);

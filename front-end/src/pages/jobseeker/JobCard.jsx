@@ -15,7 +15,7 @@ export const JobCard = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/jobs/${id}`, {
+        const res = await axios.get(`/api/jobs/${id}`, {
           withCredentials: true,
         });
         setJob(res.data);
@@ -33,7 +33,7 @@ export const JobCard = () => {
     setApplying(true);
     try {
       await axios.post(
-        "http://localhost:8080/api/applications/apply",
+        "/api/applications/apply",
         { jobTitle: job.title },
         { withCredentials: true }
       );

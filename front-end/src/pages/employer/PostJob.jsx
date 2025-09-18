@@ -24,7 +24,7 @@ export const Postjobs = () => {
   const onSubmit = async (data) => {
     if (!data.status) data.status = "OPEN";
     try {
-      await axios.post("http://localhost:8080/api/jobs", data, { withCredentials: true });
+      await axios.post("/api/jobs", data, { withCredentials: true });
       
       toast.success("Job posted successfully!");
 

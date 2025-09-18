@@ -47,7 +47,7 @@ export default function ResetPassword() {
       if (values.newPassword !== values.confirmPassword) throw new Error("Passwords do not match");
 
       const res = await axios.post(
-        "http://localhost:8080/api/auth/reset-password-with-otp",
+        "/api/auth/reset-password-with-otp",
         {
           email,
           otp: values.otp,
