@@ -1,14 +1,12 @@
-# Use a JDK image
-FROM eclipse-temurin:21-jdk-jammy
-
-# Set working directory
+# Stage 1: Build the app
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copy the built jar from target folder
-COPY target/Jobportal-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose the port (Vercel will assign dynamically)
-EXPOSE 8080
-
-# Run the app
-CMD ["java", "-jar", "app.jar"]
+# Stage 2: Run the app
+FROM eclipse-temurin:21-jdk-jammy
+WORKDIR /app
+COPY --from=build /app/target/Jobportal-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
