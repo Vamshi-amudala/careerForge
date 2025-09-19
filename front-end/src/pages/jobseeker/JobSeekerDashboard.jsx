@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { api } from "../../services/api";
 
 export const JobSeekerDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-
+// const API_URL = "https://careerforge-a3ui.onrender.com";
   useEffect(() => {
-    axios
-      .get("/api/applications/my", { withCredentials: true })
+    api.get("/api/applications/my", { withCredentials: true })
       .then((res) => {
-        // Normalize API response
+        
         const apps = Array.isArray(res.data)
           ? res.data
           : res.data?.applications || [];

@@ -5,6 +5,8 @@ import * as yup from "yup";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { api } from "../../services/api";
+
 
 export const Postjobs = () => {
   const resolver = yupResolver(
@@ -24,7 +26,7 @@ export const Postjobs = () => {
   const onSubmit = async (data) => {
     if (!data.status) data.status = "OPEN";
     try {
-      await axios.post("/api/jobs", data, { withCredentials: true });
+      await api.post("/api/jobs", data, { withCredentials: true });
       
       toast.success("Job posted successfully!");
 

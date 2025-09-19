@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
+import { api } from "../../services/api";
 
 export const EditJob = () => {
   const location = useLocation();
@@ -34,7 +35,7 @@ export const EditJob = () => {
     if (!jobId) return;
     const fetchJob = async () => {
       try {
-        const res = await axios.get(`/api/jobs/${jobId}`, { withCredentials: true });
+        const res = await api.get(`/api/jobs/${jobId}`, { withCredentials: true });
         reset(res.data);
       } catch (error) {
         console.error(error);
@@ -49,7 +50,7 @@ export const EditJob = () => {
     if (!data.status) data.status = "OPEN";
 
     try {
-      await axios.put(`/api/jobs/${jobId}`, data, { withCredentials: true });
+      await api.put(`/api/jobs/${jobId}`, data, { withCredentials: true });
       toast.success("Job updated successfully!");
      
       setTimeout(() => navigate("/manage-jobs"), 1000);

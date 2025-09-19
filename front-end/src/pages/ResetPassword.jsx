@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
-
+import {api} from "../services/api.js"
 const useForm = () => {
   const [values, setValues] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,7 +46,7 @@ export default function ResetPassword() {
         throw new Error("New password must be at least 6 characters");
       if (values.newPassword !== values.confirmPassword) throw new Error("Passwords do not match");
 
-      const res = await axios.post(
+      const res = await api.post(
         "/api/auth/reset-password-with-otp",
         {
           email,

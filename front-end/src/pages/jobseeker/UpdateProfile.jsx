@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {motion} from "framer-motion";
+import { api } from "../../services/api";
 
 export const UpdateProfile = () => {
   const [formData, setFormData] = useState(null);
@@ -13,7 +14,7 @@ export const UpdateProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("/users/profile", {
+        const res = await api.get("/users/profile", {
           withCredentials: true,
         });
         const data = res.data;
@@ -70,7 +71,7 @@ export const UpdateProfile = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await axios.put(
+      const res = await api.put(
         "/users/profile",
         formData,
         { withCredentials: true }
@@ -97,7 +98,7 @@ export const UpdateProfile = () => {
     transition={{duration:10, ease:"easeInOut", repeat:Infinity, repeatType:"reverse"}}
     alt="" />
      <div className="p-6 flex justify-center items-start min-h-screen bg-gray-100 ">
-      <div className="z-10  bg-white/25 p-6 rounded-xl shadow-lg w-full max-w-2xl space-y-4 overflow-y-auto max-h-[90vh] scrollbar-hide mt-14">
+      <div className="z-10  bg-white/25 p-6 rounded-xl shadow-lg w-full max-w-2xl space-y-4 overflow-y-auto max-h-[90vh] scrollbar-hide mt-10">
         <h2 className="text-2xl font-bold text-emerald-600">Update Profile</h2>
 
         <input

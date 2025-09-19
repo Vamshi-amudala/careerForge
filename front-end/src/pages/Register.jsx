@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 
+
 const schema = yup.object().shape({
   fullName: yup.string().required("Fullname is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -30,31 +31,45 @@ export const Register = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data) => {
-    try {
-      // 🚀 Extra guard against double submit
-      if (isSubmitting) return;
+ const onSubmit = async (data) => {
+  try {
+    if (isSubmitting) return;
 
-      const response = await registerUser(data);
+    const response = await registerUser(data);
 
-      console.log("Register successful:", response);
+    console.log("Register successful:", response);
 
-      localStorage.setItem(
-        "registeredUser",
-        JSON.stringify({
-          email: response.email,
-          role: response.role,
-        })
-      );
+    localStorage.setItem(
+      "registeredUser",
+      JSON.stringify({
+        email: response.email,
+        role: response.role,
+      })
+    );
 
-      alert("Registration successful! Please login.");
-      navigate("/login");
-      reset();
-    } catch (error) {
-      console.error("Register failed", error);
-      alert(error.message || "Something went wrong. Please try again.");
+    alert("Registration successful! Please login.");
+    navigate("/login");
+    reset();
+  } catch (error) {
+    console.error("Register failed:", error);
+
+    let message = "Something went wrong. Please try again.";
+
+    if (error.response) {
+      message =
+        error.response.data?.message ||
+        error.response.data?.error ||
+        `Error: ${error.response.status} ${error.response.statusText}`;
+    } else if (error.request) {
+      message = "No response from server. Please check your connection.";
+    } else if (error.message) {
+      message = error.message;
     }
-  };
+
+    alert(message);
+  }
+};
+
 
   const handleGoogleAuth = () => {
     alert("Google Auth Coming Soon ✨");

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import {api} from "..//../services/api.js"
 
 export const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -12,7 +13,7 @@ export const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get("/users/profile", {
+        const response = await api.get("/users/profile", {
           withCredentials: true,
         });
         setProfile(response.data);

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { api } from "../../services/api";
 
 export const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -9,7 +10,7 @@ export const Profile = () => {
 
   const loadProfile = async () => {
     try {
-      const res = await axios.get("/users/profile", {
+      const res = await api.get("/users/profile", {
         withCredentials: true,
       });
       setProfile(res.data);

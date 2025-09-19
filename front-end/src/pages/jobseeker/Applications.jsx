@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { api } from "../../services/api";
 
 export const Applications = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [confirmWithdrawId, setConfirmWithdrawId] = useState(null); // for popup
-  const [withdrawing, setWithdrawing] = useState(false); // spinner state
+  const [confirmWithdrawId, setConfirmWithdrawId] = useState(null);
+  const [withdrawing, setWithdrawing] = useState(false); 
 
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const response = await axios.get("/api/applications/my", {
+        const response = await api.get("/api/applications/my", {
           withCredentials: true,
         });
         const data = Array.isArray(response.data) ? response.data : [];
@@ -44,7 +45,7 @@ export const Applications = () => {
   const handleWithdraw = async (id) => {
     try {
       setWithdrawing(true); // start spinner
-      const response = await axios.put(
+      const response = await api.put(
         `/api/applications/applied-jobs/${id}/withdraw`,
         {},
         { withCredentials: true }

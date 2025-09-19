@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../services/api";
 
 export const ManageJobs = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export const ManageJobs = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("/api/jobs/my", { withCredentials: true })
+    api.get("/api/jobs/my", { withCredentials: true })
       .then(res => {
         setJobs(res.data);
         setLoading(false);
@@ -22,7 +23,7 @@ export const ManageJobs = () => {
   }, []);
 
   const updateStatus = (jobId, status) => {
-    axios.put(`/api/jobs/${jobId}/status?status=${status}`, {}, { withCredentials: true })
+    api.put(`/api/jobs/${jobId}/status?status=${status}`, {}, { withCredentials: true })
       .then(() => {
         setJobs(jobs.map(job => job.id === jobId ? { ...job, status } : job));
         if (selectedJob) setSelectedJob({ ...selectedJob, status });

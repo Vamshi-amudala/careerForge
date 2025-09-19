@@ -1,32 +1,41 @@
 // src/services/api.js
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/auth";
+import axios from "axios";
 
-export const registerUser = async (userData) => {
-  const response = await fetch(`${API_URL}/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(userData),
-  });
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.message || "Registration failed");
+// const API_URL = "https://careerforge-a3ui.onrender.com";
+
+export const api = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+});
+
+
+const handleError = (error, defaultMsg) => {
+  if (error.response) {
+    throw new Error(error.response.data.message || defaultMsg);
+  } else if (error.request) {
+    throw new Error("No response from server. Please try again.");
+  } else {
+    throw new Error(error.message || "Unexpected error");
   }
+};
 
-  return response.json(); // could be {message: "User registered successfully"}
+// ---------- AUTH ----------
+export const registerUser = async (userData) => {
+  try {
+    const response = await api.post("/api/auth/register", userData);
+    return response.data; 
+  } catch (error) {
+    handleError(error, "Registration failed");
+  }
 };
 
 export const loginUser = async (loginData) => {
-  const response = await fetch(`${API_URL}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(loginData),
-  });
-
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.message || "Login failed");
+  try {
+    const response = await api.post("/api/auth/login", loginData);
+    return response.data;
+  } catch (error) {
+    handleError(error, "Login failed");
   }
-
-  return response.json(); // could be {message: "Login successful"}
 };

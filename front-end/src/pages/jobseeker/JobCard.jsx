@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { api } from "../../services/api";
 
 export const JobCard = () => {
   const { id } = useParams();
@@ -15,7 +16,7 @@ export const JobCard = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const res = await axios.get(`/api/jobs/${id}`, {
+        const res = await api.get(`/api/jobs/${id}`, {
           withCredentials: true,
         });
         setJob(res.data);
@@ -32,7 +33,7 @@ export const JobCard = () => {
     if (!job) return;
     setApplying(true);
     try {
-      await axios.post(
+      await api.post(
         "/api/applications/apply",
         { jobTitle: job.title },
         { withCredentials: true }

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { api } from "../../services/api";
 
 export const ViewJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -13,7 +14,7 @@ export const ViewJobs = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await axios.get("/api/applications/available", {
+        const res = await api.get("/api/applications/available", {
           withCredentials: true,
         });
         setJobs(Array.isArray(res.data) ? res.data : []);

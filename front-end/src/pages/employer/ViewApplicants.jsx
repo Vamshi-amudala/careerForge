@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../services/api";
 
 export const ViewApplicants = () => {
   const [applications, setApplications] = useState([]);
@@ -17,8 +18,7 @@ export const ViewApplicants = () => {
   }, []);
 
   const loadApplications = () => {
-    axios
-      .get("/api/applications/employer", { withCredentials: true })
+    api.get("/api/applications/employer", { withCredentials: true })
       .then((res) => {
         setApplications(res.data);
         setLoading(false);
@@ -30,7 +30,7 @@ export const ViewApplicants = () => {
   };
 
   const updateStatus = (appId, newStatus) => {
-    axios
+    api
       .put(
         `/api/applications/${appId}/status`,
         { status: newStatus },
@@ -53,7 +53,10 @@ export const ViewApplicants = () => {
     if (!resumeUrl) return;
 
     const filename = resumeUrl.split('/').pop();
-    const viewUrl = `/api/resume/view/${filename}`;
+    // const viewUrl = `/api/resume/view/${filename}`;
+    // For viewing resume
+const viewUrl = `${api.defaults.baseURL}/resume/view/${filename}`;
+
 
     try {
       const response = await fetch(viewUrl, {
