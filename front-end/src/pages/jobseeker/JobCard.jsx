@@ -11,7 +11,7 @@ export const JobCard = () => {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false); // confirmation modal toggle
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -48,7 +48,7 @@ export const JobCard = () => {
       }
     } finally {
       setApplying(false);
-      setShowConfirm(false); // close modal after applying
+      setShowConfirm(false); 
     }
   };
 

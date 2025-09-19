@@ -59,17 +59,17 @@ export const Applications = () => {
       );
 
       console.log("Application withdrawn:", response.data);
-      setConfirmWithdrawId(null); // close popup
+      setConfirmWithdrawId(null);
     } catch (err) {
       console.error("Failed to withdraw application", err);
     } finally {
-      setWithdrawing(false); // stop spinner
+      setWithdrawing(false);
     }
   };
 
   return (
     <div className="relative h-full w-full min-h-screen overflow-y-auto p-4 sm:p-6">
-      {/* Animated Background */}
+      
       <motion.img
         src="/images/applications.png"
         className="h-full w-full object-cover fixed blur-sm z-0 brightness-50"
@@ -84,7 +84,7 @@ export const Applications = () => {
         }}
       />
 
-      {/* Foreground Content */}
+     
       <div className="absolute inset-0 z-10 flex flex-col justify-center items-center pt-20 sm:pt-24 lg:pt-28 mt-16 sm:mt-18 lg:mt-20 w-full px-2 sm:px-4">
         <motion.h1 
           className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 mt-20 sm:mt-32 lg:mt-40"
@@ -101,7 +101,7 @@ export const Applications = () => {
           <p className="text-white text-lg sm:text-xl text-center">No applications found.</p>
         ) : (
           <div className="w-full max-w-xs sm:max-w-4xl lg:max-w-6xl rounded-2xl glassmorphism p-3 sm:p-6">
-            {/* Mobile Card View */}
+            
             <div className="block sm:hidden space-y-3">
               {applications.map((app) => (
                 <div
@@ -133,7 +133,7 @@ export const Applications = () => {
               ))}
             </div>
 
-            {/* Desktop Table View */}
+            
             <div className="hidden sm:block overflow-x-auto">
               <table className="min-w-full bg-white/15 cursor-pointer">
                 <thead className="bg-teal-900/50">
@@ -182,7 +182,6 @@ export const Applications = () => {
         )}
       </div>
 
-      {/* Confirmation Popup */}
       {confirmWithdrawId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white/90 rounded-xl shadow-lg p-4 sm:p-6 max-w-xs sm:max-w-sm w-full text-center">

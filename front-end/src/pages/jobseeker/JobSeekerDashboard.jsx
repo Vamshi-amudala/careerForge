@@ -60,7 +60,7 @@ export const JobSeekerDashboard = () => {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden p-6">
-      {/* Animated background */}
+      
       <motion.img
         src="/images/job-dashboard.png"
         alt="Job Dashboard"
@@ -75,7 +75,7 @@ export const JobSeekerDashboard = () => {
         }}
       />
 
-      {/* Dashboard Title */}
+      
       <motion.h1
         className="text-3xl font-bold mb-6 mt-20 text-center text-white z-10 relative"
         initial={{ opacity: 0, y: -20 }}
@@ -85,7 +85,7 @@ export const JobSeekerDashboard = () => {
         Jobseeker Dashboard
       </motion.h1>
 
-      {/* Status Summary Cards */}
+      
       <motion.div className="mt-8 grid grid-cols-2 md:grid-cols-5 gap-4 z-10 relative">
         {statuses.map((status, i) => (
           <motion.div
@@ -105,7 +105,7 @@ export const JobSeekerDashboard = () => {
         ))}
       </motion.div>
 
-      {/* Applications */}
+     
       <motion.div
         className="mt-8 bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 z-10 relative"
         initial={{ opacity: 0, y: 30 }}

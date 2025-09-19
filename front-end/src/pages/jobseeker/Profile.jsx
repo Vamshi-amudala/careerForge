@@ -9,7 +9,7 @@ export const Profile = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Fetch profile once when component mounts
+ 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -31,7 +31,7 @@ export const Profile = () => {
 
   return (
     <div className="relative h-full w-full overflow-y-auto p-6 ">
-      {/* Background animation */}
+     
       <motion.img
         src="/images/profile.png"
         className="h-full w-full object-cover fixed blur-sm brightness-50"
@@ -46,7 +46,7 @@ export const Profile = () => {
         alt="background"
       />
 
-      {/* Profile info card */}
+
       <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-white backdrop-brightness-50 ">
         <motion.div
           className=" p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto scrollbar-hide"
@@ -56,37 +56,37 @@ export const Profile = () => {
         >
           <h1 className="text-center text-4xl font-bold mb-5 p-2 font-mono">Profile</h1>
           <div className="text-white space-y-4 text-xl">
-            {/* Full Name */}
+         
             <div className="grid grid-cols-[150px_auto] gap-2">
               <span className="text-emerald-500 font-semibold font-mono">Full name :</span>
               <span>{profile.fullName}</span>
             </div>
-            {/* Email */}
+        
             <div className="grid grid-cols-[150px_auto] gap-2">
               <span className="text-emerald-500 font-semibold font-mono">Email :</span>
               <span>{profile.email}</span>
             </div>
-            {/* Phone */}
+           
             <div className="grid grid-cols-[150px_auto] gap-2">
               <span className="text-emerald-500 font-semibold font-mono">Phone :</span>
               <span>{profile.phone}</span>
             </div>
-            {/* Address */}
+           
             <div className="grid grid-cols-[150px_auto] gap-2">
               <span className="text-emerald-500 font-semibold font-mono">Address :</span>
               <span>{profile.address}</span>
             </div>
-            {/* Education */}
+           
             <div className="grid grid-cols-[150px_auto] gap-2">
               <span className="text-emerald-500 font-semibold font-mono">Education :</span>
               <span>{profile.education}</span>
             </div>
-            {/* Experience */}
+            
             <div className="grid grid-cols-[150px_auto] gap-2">
               <span className="text-emerald-500 font-semibold font-mono">Experience :</span>
               <span>{profile.exp}</span>
             </div>
-            {/* Skills */}
+           
             <div className="grid grid-cols-[150px_auto] gap-2">
               <span className="text-emerald-500 font-semibold font-mono">Skills :</span>
               <div className="flex flex-wrap gap-2">
@@ -104,7 +104,7 @@ export const Profile = () => {
                 )}
               </div>
             </div>
-            {/* Projects */}
+            
             <div className="grid grid-cols-[150px_auto] gap-2">
               <span className="text-emerald-500 font-semibold font-mono">Projects :</span>
               <div className="space-y-3">
@@ -122,7 +122,7 @@ export const Profile = () => {
             </div>
           </div>
 
-          {/* Update Profile Button */}
+          
           <div className="mt-6 flex justify-end">
             <button
               onClick={() => navigate("/job-profile/edit")}

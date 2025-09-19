@@ -77,7 +77,7 @@ export const Register = () => {
 
   return (
     <div className="relative w-screen min-h-screen flex justify-center items-center overflow-hidden px-4 sm:px-6 lg:px-8 py-8">
-      {/* Background */}
+    
       <motion.img
         src="/images/login-page.jpg"
         alt="Background"
@@ -88,12 +88,12 @@ export const Register = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-emerald-900/40" />
 
-      {/* Glassmorphic Form - Responsive */}
+     
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="relative z-10 w-full max-w-sm sm:max-w-lg md:max-w-2xl lg:max-w-3xl bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 sm:p-6 lg:p-8 shadow-2xl backdrop-brightness-75 mt-4 sm:mt-6 lg:mt-10"
       >
-        {/* Header */}
+        
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold mb-4 sm:mb-6 text-center text-white drop-shadow-lg">
           Create your account
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-500 to-sky-500 animate-pulse text-sm sm:text-md lg:text-lg">
@@ -101,9 +101,9 @@ export const Register = () => {
           </span>
         </h2>
 
-        {/* Grid Layout - Responsive */}
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
-          {/* Fullname */}
+        
           <div className="sm:col-span-2 md:col-span-1">
             <label className="block text-white/80 text-sm mb-2">Full Name</label>
             <input
@@ -119,7 +119,7 @@ export const Register = () => {
             )}
           </div>
 
-          {/* Email */}
+         
           <div className="sm:col-span-2 md:col-span-1">
             <label className="block text-white/80 text-sm mb-2">Email</label>
             <input
@@ -133,7 +133,7 @@ export const Register = () => {
             )}
           </div>
 
-          {/* Password */}
+         
           <div className="relative sm:col-span-2 md:col-span-1">
             <label className="block text-white/80 text-sm mb-2">Password</label>
             <input
@@ -156,7 +156,7 @@ export const Register = () => {
             )}
           </div>
 
-          {/* Role */}
+         
           <div className="sm:col-span-2 md:col-span-1">
             <label className="block text-white/80 text-sm mb-2">Role</label>
             <select
@@ -179,7 +179,7 @@ export const Register = () => {
           </div>
         </div>
 
-        {/* Submit Button - Responsive */}
+     
         <button
           type="submit"
           disabled={isSubmitting}
@@ -198,7 +198,7 @@ export const Register = () => {
           <span className="hidden xs:inline">Continue with </span>Google
         </button>
 
-        {/* Footer - Responsive */}
+      
         <p className="text-center text-xs sm:text-sm text-gray-300 mt-4 sm:mt-6">
           Already have an account?{" "}
           <Link to="/login" className="text-emerald-400 font-semibold hover:underline">
