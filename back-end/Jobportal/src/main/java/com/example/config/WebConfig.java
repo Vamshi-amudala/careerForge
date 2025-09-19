@@ -13,8 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                     "http://localhost:5173",
                     "https://careerly-v.netlify.app",
-                    "https://career-forge-portal.netlify.app",
-                    "https://career-forge-2bua-gjnw00qfm-vamshi-amudalas-projects.vercel.app"
+                    "https://career-forge-portal.netlify.app"
                 )
 
                 .allowedMethods("GET", "POST", "PUT", "DELETE","OPTIONS")
