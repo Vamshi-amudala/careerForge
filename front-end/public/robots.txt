@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://career-forge-portal.netlify.app/sitemap.xml
