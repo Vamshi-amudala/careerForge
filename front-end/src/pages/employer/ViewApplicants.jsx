@@ -49,45 +49,17 @@ export const ViewApplicants = () => {
       });
   };
 
-  const handleViewResume = async (resumeUrl) => {
-    if (!resumeUrl) return;
+const handleViewResume = async (resumeUrl) => {
+  if (!resumeUrl) return;
 
-    const filename = resumeUrl.split('/').pop();
-    // const viewUrl = `/api/resume/view/${filename}`;
-    // For viewing resume
-const viewUrl = `${api.defaults.baseURL}/resume/view/${filename}`;
+  const filename = resumeUrl.split('/').pop();
+  // ✅ Use the public "application" endpoint for other users
+  const viewUrl = `${import.meta.env.VITE_API_URL || "http://localhost:8080"}/api/resume/view/application/${filename}`;
+
+  window.open(viewUrl, "_blank");
+};
 
 
-    try {
-      const response = await fetch(viewUrl, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        }
-      });
-
-      if (!response.ok) {
-        alert("❌ Failed to load resume.");
-        return;
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      setTimeout(() => window.URL.revokeObjectURL(url), 1000);
-
-    } catch (err) {
-      console.error("Error viewing resume:", err);
-      alert("❌ Error loading resume.");
-    }
-  };
 
   const jobTitles = [...new Set(applications.map((app) => app.job.title))];
 
@@ -232,14 +204,14 @@ const viewUrl = `${api.defaults.baseURL}/resume/view/${filename}`;
                   </select>
                 </div>
 
-                <a
-                  href={`/api/resume/view/application/${app.resumeUrl.split('/').pop()}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-block mt-3 text-emerald-300 hover:underline cursor-pointer text-sm sm:text-base"
-                >
-                  📄 View Resume
-                </a>
+              <button
+                onClick={() => handleViewResume(app.resumeUrl)}
+                className="inline-block mt-3 text-emerald-300 hover:underline cursor-pointer text-sm sm:text-base"
+              >
+                📄 View Resume
+              </button>
+
+
               </motion.div>
             ))
           )}

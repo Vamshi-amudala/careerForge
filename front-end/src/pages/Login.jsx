@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
 import { Eye, EyeOff, Loader } from "lucide-react"; 
 import { useAuth } from "../context/AuthContext"; 
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,24 +8,16 @@ import { ToastContainer, toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {api} from "../services/api.js";
+import { api } from "../services/api.js";
 
 const schema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
 });
 
-// Use full backend URL in production
-// const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
-// const API_URL = "https://careerforge-a3ui.onrender.com";
-
 const loginUser = async (data) => {
   try {
-    const response = await api.post(
-      "/api/auth/login",
-      data,
-      { withCredentials: true }
-    );
+    const response = await api.post("/api/auth/login", data, { withCredentials: true });
     return response.data;
   } catch (err) {
     console.error("Login request failed:", err);
@@ -67,7 +58,6 @@ export default function Login() {
       toastId = toast.loading("Signing you in...", { position: "top-center" });
 
       const response = await loginUser(data);
-
       login(response);
 
       toast.update(toastId, {
@@ -110,7 +100,7 @@ export default function Login() {
       <div className="absolute w-full h-full bg-gradient-to-br from-emerald-900/30 via-gray-900/50 to-teal-900/40 animate-pulse" />
       <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/30 to-emerald-900/50" />
 
-      <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-2xl backdrop-brightness-75 my-8">
+      <main className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-2xl backdrop-brightness-75 my-8">
         <div className="text-center mb-6 sm:mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">
             Welcome Back
@@ -130,6 +120,7 @@ export default function Login() {
               type="email"
               {...register("email")}
               placeholder="Enter your email"
+              aria-invalid={errors.email ? "true" : "false"}
               className="w-full px-4 py-3 rounded-xl border border-white/30 bg-white/5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-all duration-300 text-sm sm:text-base"
             />
             {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
@@ -144,11 +135,13 @@ export default function Login() {
               type={showPassword ? "text" : "password"}
               {...register("password")}
               placeholder="Enter your password"
+              aria-invalid={errors.password ? "true" : "false"}
               className="w-full px-4 py-3 pr-12 rounded-xl border border-white/30 bg-white/5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-all duration-300 text-sm sm:text-base"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
               className="absolute right-4 top-9 text-white/70 hover:text-emerald-300 transition-colors"
             >
               {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
@@ -180,7 +173,7 @@ export default function Login() {
             </Link>
           </p>
         </div>
-      </div>
+      </main>
 
       <ToastContainer
         position="top-center"

@@ -91,33 +91,22 @@ export const ResumeUpload = () => {
     }
   };
 
-  const getViewUrl = (resumeUrl) => {
-    if (!resumeUrl) return null;
-    const filename = resumeUrl.split("/").pop();
-    return `/api/resume/view/${filename}`;
-  };
+const getViewUrl = (resumeUrl) => {
+  if (!resumeUrl) return null;
 
-  const handleViewResume = async (resumeUrl) => {
-    const viewUrl = getViewUrl(resumeUrl);
-    if (!viewUrl) return;
+  return `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}${resumeUrl}`;
+};
 
-    try {
-      const response = await api.get(viewUrl, { responseType: "blob" });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => window.URL.revokeObjectURL(url), 1000);
-    } catch (error) {
-      console.error("Error viewing resume:", error);
-      setMessage("❌ Failed to load resume. Please try again.");
-    }
-  };
+
+const handleViewResume = (resumeUrl) => {
+  const viewUrl = getViewUrl(resumeUrl);
+  if (!viewUrl) return;
+
+  // Opens directly in a new tab
+  window.open(viewUrl, "_blank", "noopener,noreferrer");
+};
+
 
   return (
     <div className="relative h-full w-full overflow-hidden">
