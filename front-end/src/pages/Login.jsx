@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Loader } from "lucide-react"; 
-import { useAuth } from "../context/AuthContext"; 
+import { Eye, EyeOff, Loader } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,7 @@ const loginUser = async (data) => {
     const response = await api.post("/api/auth/login", data, { withCredentials: true });
     return response.data;
   } catch (err) {
-    console.error("Login request failed:", err);
+    // Login request failed
     if (err.response && err.response.data) {
       throw new Error(err.response.data.message || "Login failed");
     } else {
@@ -76,7 +76,7 @@ export default function Login() {
 
       reset();
     } catch (error) {
-      console.error("Login failed:", error);
+      // Login failed
 
       toast.update(toastId, {
         render: error.response?.data?.message || error.message || "Login failed. Please try again.",

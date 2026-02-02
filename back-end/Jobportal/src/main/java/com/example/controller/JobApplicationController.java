@@ -18,7 +18,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.*;
 import java.util.Map;
@@ -31,7 +35,7 @@ public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
     private final JobService jobService;
     private final UserRepository userRepository;
-    private final JobApplicationRepository jobApplicationRepository;
+
     private final JobRepository jobRepository;
 
     @PostMapping("/apply")
@@ -45,36 +49,26 @@ public class JobApplicationController {
     public ResponseEntity<List<JobApplicationResponse>> getMyApplications() {
         return ResponseEntity.ok(jobService.getMyAppliedJobs());
     }
-    
+
     @GetMapping("/available")
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public List<Job> getAvailableJobs(Authentication auth) {
+    public Page<Job> getAvailableJobs(
+            Authentication auth,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         User user = userRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<Long> appliedJobIds = jobApplicationRepository
-                .findByApplicant_Id(user.getId()).stream()
-                .filter(app -> List.of(
-                        ApplicationStatus.APPLIED.name(),
-                        ApplicationStatus.UNDER_REVIEW.name(),
-                        ApplicationStatus.INTERVIEWING.name(),
-                        ApplicationStatus.SELECTED.name()
-                ).contains(app.getStatus().name()))
-                .map(app -> app.getJob().getId())
-                .toList();
-
-        return jobRepository.findAll().stream()
-                .filter(job -> !appliedJobIds.contains(job.getId()))
-                .toList();
+        Pageable pageable = PageRequest.of(page, size);
+        return jobRepository.findAvailableJobs(user.getId(), pageable);
     }
-    
+
     @GetMapping("/employer")
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<List<JobApplicationResponse>> getApplicationsForMyJobs() {
         return ResponseEntity.ok(jobService.getApplicationsForMyJobs());
     }
 
-    
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<JobApplicationResponse> updateApplicationStatus(
@@ -83,7 +77,7 @@ public class JobApplicationController {
         ApplicationStatus status = ApplicationStatus.valueOf(payload.get("status"));
         return ResponseEntity.ok(jobService.updateApplicationStatus(id, status));
     }
-    
+
     @PutMapping("/applied-jobs/{id}/withdraw")
     @PreAuthorize("hasRole('JOB_SEEKER')")
     public ResponseEntity<JobApplicationResponse> withdrawApplication(

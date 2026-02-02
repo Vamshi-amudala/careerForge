@@ -12,7 +12,7 @@ export const ResumeUpload = () => {
     const fetchResume = async () => {
       try {
         const { data } = await api.get("/api/resume");
-        console.log("Fetch response:", data);
+        // Fetch response logged for debugging (removed)
 
         if (data && data.resumeUrl) {
           setResumeUrl(data.resumeUrl);
@@ -20,7 +20,7 @@ export const ResumeUpload = () => {
           setResumeUrl(null);
         }
       } catch (err) {
-        console.error("Error fetching resume:", err);
+        // Error fetching resume
         setMessage("❌ Failed to fetch existing resume");
       }
     };
@@ -62,7 +62,7 @@ export const ResumeUpload = () => {
         },
       });
 
-      console.log("Upload response:", data);
+      // Upload response logged (removed)
 
       if (data && data.resumeUrl) {
         setResumeUrl(data.resumeUrl);
@@ -72,7 +72,7 @@ export const ResumeUpload = () => {
         setMessage("❌ Upload succeeded but no URL returned.");
       }
     } catch (err) {
-      console.error("Error uploading resume:", err);
+      // Error uploading resume
       setMessage("❌ Failed to upload resume. Please try again.");
     } finally {
       setLoading(false);
@@ -91,21 +91,23 @@ export const ResumeUpload = () => {
     }
   };
 
-const getViewUrl = (resumeUrl) => {
-  if (!resumeUrl) return null;
+  const handleViewResume = async (resumeUrl) => {
+    if (!resumeUrl) return;
 
-  return `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}${resumeUrl}`;
-};
+    try {
+      const response = await api.get(resumeUrl, {
+        responseType: 'blob',
+        withCredentials: true
+      });
 
-
-
-const handleViewResume = (resumeUrl) => {
-  const viewUrl = getViewUrl(resumeUrl);
-  if (!viewUrl) return;
-
-  // Opens directly in a new tab
-  window.open(viewUrl, "_blank", "noopener,noreferrer");
-};
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const blobUrl = window.URL.createObjectURL(blob);
+      window.open(blobUrl, "_blank");
+    } catch (err) {
+      console.error("View resume error", err);
+      setMessage("❌ Failed to open resume (Auth error?)");
+    }
+  };
 
 
   return (
@@ -157,15 +159,14 @@ const handleViewResume = (resumeUrl) => {
 
           {message && (
             <div
-              className={`text-sm p-3 rounded-lg mb-4 ${
-                message.includes("✅")
-                  ? "bg-green-100 text-green-700"
-                  : message.includes("⚠️")
+              className={`text-sm p-3 rounded-lg mb-4 ${message.includes("✅")
+                ? "bg-green-100 text-green-700"
+                : message.includes("⚠️")
                   ? "bg-yellow-100 text-yellow-700"
                   : message.includes("❌")
-                  ? "bg-red-100 text-red-700"
-                  : "bg-blue-100 text-blue-700"
-              }`}
+                    ? "bg-red-100 text-red-700"
+                    : "bg-blue-100 text-blue-700"
+                }`}
             >
               {message}
             </div>
@@ -196,7 +197,7 @@ const handleViewResume = (resumeUrl) => {
                   View Resume
                 </button>
                 <span className="text-xs text-gray-500 text-center">
-                  {resumeUrl.split("/").pop()}
+                  {resumeUrl ? resumeUrl.split("/").pop() : "Resume"}
                 </span>
               </div>
             </div>

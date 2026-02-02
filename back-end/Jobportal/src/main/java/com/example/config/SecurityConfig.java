@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +24,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,65 +42,46 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .cors()
-            .and()
-            .csrf().disable()
-            .authorizeHttpRequests(auth -> auth
-                // Public HTML pages
-                .requestMatchers(
-                    "/", "/index.html", "/login.html", "/register.html",
-                    "/forgot-password.html", "/reset-password.html",
-                    "/css/**", "/js/**", "/images/**"
-                ).permitAll()
+                .cors()
+                .and()
+                .csrf().disable()
+                .authorizeHttpRequests(auth -> auth
+                        // Public API endpoints
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/forgot-password",
+                                "/api/auth/reset-password",
+                                "/api/auth/send-otp",
+                                "/api/auth/reset-password-with-otp")
+                        .permitAll()
 
-                // Public API endpoints
-                .requestMatchers(
-                    "/api/auth/register",
-                    "/api/auth/login",
-                    "/api/auth/forgot-password",
-                    "/api/auth/reset-password",
-                    "/api/auth/send-otp",
-                    "/api/auth/reset-password-with-otp"
-                ).permitAll()
+                        // Allow OPTIONS for CORS preflight
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // Allow OPTIONS for CORS preflight
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Public resume uploads
+                        .requestMatchers("/uploads/resumes/**").permitAll()
 
-                // Public resume uploads
-                .requestMatchers("/uploads/resumes/**").permitAll()
+                        // Everything else requires authentication
+                        .anyRequest().authenticated())
 
-                // Everything else requires authentication
-                .anyRequest().authenticated()
-            )
+                // Exception handling for API
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((HttpServletRequest request, HttpServletResponse response,
+                                org.springframework.security.core.AuthenticationException authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        })
+                        .accessDeniedHandler(accessDeniedHandler))
 
-            // Form login for browser (HTML) access
-            .formLogin(form -> form
-                .loginPage("/login.html")
-                .defaultSuccessUrl("/dashboard", true)
-                .permitAll()
-            )
+                // Session management - stateless for API
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // Custom handling for APIs vs HTML
-            .exceptionHandling(exception -> exception
-                .authenticationEntryPoint((HttpServletRequest request, HttpServletResponse response, org.springframework.security.core.AuthenticationException authException) -> {
-                    if (request.getRequestURI().startsWith("/api/")) {
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                    } else {
-                        response.sendRedirect("/login.html");
-                    }
-                })
-                .accessDeniedHandler(accessDeniedHandler)
-            )
+                // Frame options
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin()));
 
-            // Session management
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            )
-
-            // Frame options
-            .headers(headers -> headers
-                .frameOptions(frame -> frame.sameOrigin())
-            );
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

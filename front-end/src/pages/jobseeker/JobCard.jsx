@@ -35,7 +35,7 @@ export const JobCard = () => {
     try {
       await api.post(
         "/api/applications/apply",
-        { jobTitle: job.title },
+        { jobTitle: job.title, jobId: job.id },
         { withCredentials: true }
       );
       toast.success("Applied successfully!");
@@ -48,7 +48,7 @@ export const JobCard = () => {
       }
     } finally {
       setApplying(false);
-      setShowConfirm(false); 
+      setShowConfirm(false);
     }
   };
 

@@ -13,8 +13,8 @@ import { Register } from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
-import {JobSeekerDashboard} from './pages/jobseeker/JobSeekerDashboard';
-import {EmployerDashboard} from './pages/employer/EmployerDashboard';
+import { JobSeekerDashboard } from './pages/jobseeker/JobSeekerDashboard';
+import { EmployerDashboard } from './pages/employer/EmployerDashboard';
 // import { ProtectedRoute } from "./components/ProtectedRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ToastProvider from "./components/ToastProvider";
@@ -29,7 +29,7 @@ import { JobCard } from './pages/jobseeker/JobCard';
 import { Applications } from './pages/jobseeker/Applications';
 import { Profile as JobSeekerProfile } from './pages/jobseeker/Profile';
 import { UpdateProfile as UpdateJobseeker } from './pages/jobseeker/UpdateProfile';
-import {  ResumeUpload } from './pages/jobseeker/ResumeUpload';
+import { ResumeUpload } from './pages/jobseeker/ResumeUpload';
 
 
 import {
@@ -72,7 +72,7 @@ const transitionConfig = {
 };
 
 const getPageVariant = (currentPath, previousPath) => {
-  const routes = ['/', '/about', '/services', '/features', '/faq', '/contact', '/login', '/register','/forgotpass','/resetPass'];
+  const routes = ['/', '/about', '/services', '/features', '/faq', '/contact', '/login', '/register', '/forgotpass', '/resetPass'];
   const currentIndex = routes.indexOf(currentPath);
   const previousIndex = routes.indexOf(previousPath);
 
@@ -90,7 +90,7 @@ function AnimatedPage({ children }) {
   const location = useLocation();
   const previousPathRef = useRef(location.pathname);
 
-  
+
   const previousPath = previousPathRef.current;
   useEffect(() => {
     previousPathRef.current = location.pathname;
@@ -111,7 +111,7 @@ function AnimatedPage({ children }) {
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundColor: 'black', 
+        backgroundColor: 'black',
         overflowX: 'hidden',
         zIndex: 1
       }}
@@ -153,8 +153,8 @@ function AnimatedRoutes() {
           <Route path="/contact" element={<AnimatedPage><Contact /></AnimatedPage>} />
           <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
           <Route path="/register" element={<AnimatedPage><Register /></AnimatedPage>} />
-          <Route path="/forgotPass" element={<AnimatedPage><ForgotPassword /></AnimatedPage>}/>
-          <Route path="/reset-pass" element={<AnimatedPage><ResetPassword/></AnimatedPage>}/>
+          <Route path="/forgotPass" element={<AnimatedPage><ForgotPassword /></AnimatedPage>} />
+          <Route path="/reset-pass" element={<AnimatedPage><ResetPassword /></AnimatedPage>} />
 
 
           <Route
@@ -169,7 +169,7 @@ function AnimatedRoutes() {
           />
 
           <Route
-          
+
             path='/view-jobs'
             element={
               <ProtectedRoute allowedRoles={["job_seeker"]}>
@@ -178,7 +178,7 @@ function AnimatedRoutes() {
                 </AnimatedPage>
               </ProtectedRoute>
             }
-          />  
+          />
           <Route
             path="/job-card/:id"
             element={
@@ -188,50 +188,50 @@ function AnimatedRoutes() {
                 </AnimatedPage>
               </ProtectedRoute>
             }
-          />  
+          />
 
           <Route
             path='/applications'
             element={
               <ProtectedRoute allowedRoles={["job_seeker"]}>
                 <AnimatedPage>
-                  <Applications/>
+                  <Applications />
                 </AnimatedPage>
               </ProtectedRoute>
             }
           />
 
-            <Route
+          <Route
             path='/job-profile'
             element={
               <ProtectedRoute allowedRoles={["job_seeker"]}>
                 <AnimatedPage>
-                  <JobSeekerProfile/>
+                  <JobSeekerProfile />
                 </AnimatedPage>
               </ProtectedRoute>
             }
-            />          
-              <Route
+          />
+          <Route
             path='/job-profile/edit'
             element={
               <ProtectedRoute allowedRoles={["job_seeker"]}>
                 <AnimatedPage>
-                  <UpdateJobseeker/>
+                  <UpdateJobseeker />
                 </AnimatedPage>
               </ProtectedRoute>
             }
-            />
-            <Route
+          />
+          <Route
             path='/resume'
             element={
               <ProtectedRoute allowedRoles={["job_seeker"]}>
                 <AnimatedPage>
-                  <ResumeUpload/>
+                  <ResumeUpload />
                 </AnimatedPage>
               </ProtectedRoute>
             }
-            />
-  
+          />
+
           <Route
             path="/employer-dashboard"
             element={
@@ -243,65 +243,65 @@ function AnimatedRoutes() {
             }
           />
           <Route
-              path="/post-job"
-              element={
-                <ProtectedRoute allowedRoles={["employer"]}>
-                  <AnimatedPage>
-                    <Postjobs />
-                  </AnimatedPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/manage-jobs"
-              element={
-                <ProtectedRoute allowedRoles={["employer"]}>
-                  <AnimatedPage>
-                    <ManageJobs />
-                  </AnimatedPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/edit-job"
-              element={
-                <ProtectedRoute allowedRoles={["employer"]}>
-                  <AnimatedPage>
-                    <EditJob />
-                  </AnimatedPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/view-applicants'
-              element={
-                <ProtectedRoute allowedRoles={["employer"]}>
-                  <AnimatedPage>
-                    <ViewApplicants />
-                  </AnimatedPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
+            path="/post-job"
+            element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <AnimatedPage>
+                  <Postjobs />
+                </AnimatedPage>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manage-jobs"
+            element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <AnimatedPage>
+                  <ManageJobs />
+                </AnimatedPage>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-job"
+            element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <AnimatedPage>
+                  <EditJob />
+                </AnimatedPage>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/view-applicants'
+            element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <AnimatedPage>
+                  <ViewApplicants />
+                </AnimatedPage>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/profile'
             element={
               <ProtectedRoute allowedRoles={["employer"]}>
                 <AnimatedPage>
-                  <Profile/>
+                  <Profile />
                 </AnimatedPage>
               </ProtectedRoute>
             }
-            />
-                        <Route
+          />
+          <Route
             path='/profile/edit'
             element={
               <ProtectedRoute allowedRoles={["employer"]}>
                 <AnimatedPage>
-                  <UpdateProfile/>
+                  <UpdateProfile />
                 </AnimatedPage>
               </ProtectedRoute>
             }
-            />
+          />
         </Routes>
       </AnimatePresence>
     </div>
@@ -337,14 +337,14 @@ const LoadingSpinner = () => (
 );
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
+
 
   return (
     <Router>
       <Navbar />
       <AnimatedRoutes />
-      <AnimatePresence>{isLoading && <LoadingSpinner />}</AnimatePresence>
-       <ToastProvider />
+
+      <ToastProvider />
     </Router>
   );
 }

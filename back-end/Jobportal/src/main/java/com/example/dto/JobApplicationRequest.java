@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class JobApplicationRequest {
+    private Long jobId;
     private String applicantName;
     private String email;
     private String education;

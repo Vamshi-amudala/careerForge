@@ -15,7 +15,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+
 import org.springframework.stereotype.Service;
 
 import com.example.dto.AuthResponseDto;
@@ -25,15 +25,15 @@ import com.example.dto.UserRegistrationDto;
 import com.example.entity.User;
 import com.example.exception.EmailAlreadyExistsException;
 import com.example.repository.UserRepository;
+import com.example.util.JwtUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 @Service
 public class AuthService {
 
-	  @Autowired
-	    private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
 
@@ -43,13 +43,15 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     public RegistrationResponseDto registerUser(UserRegistrationDto dto) {
         String cleanEmail = dto.getEmail().trim().toLowerCase();
 
         if (userRepository.existsByEmail(cleanEmail)) {
             throw new EmailAlreadyExistsException(
-                "Email already registered, please use a different email!"
-            );
+                    "Email already registered, please use a different email!");
         }
 
         User user = new User();
@@ -61,51 +63,41 @@ public class AuthService {
         userRepository.save(user);
 
         return new RegistrationResponseDto(
-            "User registered successfully as " + dto.getRole().name(),
-            user.getEmail(),
-            user.getRole().name()
-        );
+                "User registered successfully as " + dto.getRole().name(),
+                user.getEmail(),
+                user.getRole().name());
     }
 
-
-  
     public AuthResponseDto login(LoginDto loginDto, HttpServletRequest request) {
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginDto.getEmail(), loginDto.getPassword()
-            )
-        );
+                new UsernamePasswordAuthenticationToken(
+                        loginDto.getEmail(), loginDto.getPassword()));
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
 
-        HttpSession session = request.getSession(true);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+        String jwt = jwtUtil.generateJwtToken(authentication);
 
-        String role = authentication.getAuthorities().stream()
-            .findFirst()
-            .map(GrantedAuthority::getAuthority)
-            .map(r -> r.replace("ROLE_", ""))
-            .orElse("USER");
-
+        // Retrieve user details after successful authentication
         User user = userRepository.findByEmail(loginDto.getEmail())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found after authentication"));
+        String role = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(r -> r.replace("ROLE_", ""))
+                .findFirst()
+                .orElse("USER"); // Default role if none found
 
         return new AuthResponseDto(
-            "Login successful",
-            user.getEmail(),
-            role,
-            user.getFullName()
-        );
+                "Login successful",
+                user.getEmail(),
+                role,
+                user.getFullName(),
+                jwt);
     }
 
-
-
-
-    
     public void sendOtp(String email) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
 
         String otp = String.format("%06d", new java.security.SecureRandom().nextInt(1000000));
         user.setOtpCode(otp);
@@ -115,12 +107,10 @@ public class AuthService {
         emailService.sendOtpEmail(user.getEmail(), otp);
     }
 
-
-    
     public void verifyOtpAndResetPassword(String email, String otp, String newPassword, String confirmPassword) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
-        
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
+
         if (user.getOtpCode() == null || !otp.equals(user.getOtpCode())) {
             throw new BadCredentialsException("Invalid OTP");
         }
@@ -129,24 +119,17 @@ public class AuthService {
             throw new BadCredentialsException("OTP has expired");
         }
 
-       
         if (!newPassword.equals(confirmPassword)) {
             throw new IllegalArgumentException("Passwords do not match");
         }
 
-       
         user.setPassword(passwordEncoder.encode(newPassword));
 
-   
         user.setOtpCode(null);
         user.setOtpExpiration(null);
         userRepository.save(user);
 
         emailService.sendResetPasswordConfirmationEmail(user.getEmail());
     }
-
-
-    
-    
 
 }

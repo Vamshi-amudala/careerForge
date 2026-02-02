@@ -49,15 +49,21 @@ export const ViewApplicants = () => {
       });
   };
 
-const handleViewResume = async (resumeUrl) => {
-  if (!resumeUrl) return;
+  const handleViewResume = async (resumeUrl) => {
+    if (!resumeUrl) return;
 
-  const filename = resumeUrl.split('/').pop();
-  // ✅ Use the public "application" endpoint for other users
-  const viewUrl = `${import.meta.env.VITE_API_URL || "http://localhost:8080"}/api/resume/view/application/${filename}`;
-
-  window.open(viewUrl, "_blank");
-};
+    try {
+      const response = await api.get(resumeUrl, {
+        responseType: 'blob',
+        withCredentials: true
+      });
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const blobUrl = window.URL.createObjectURL(blob);
+      window.open(blobUrl, "_blank");
+    } catch (err) {
+      alert("❌ Failed to open resume.");
+    }
+  };
 
 
 
@@ -154,7 +160,7 @@ const handleViewResume = async (resumeUrl) => {
                     ({app.applicant.email})
                   </span>
                 </h2>
-                
+
                 <div className="space-y-1 text-sm sm:text-base">
                   <p>📞 {app.applicant.phone}</p>
                   <p>🎓 {app.applicant.education}</p>
@@ -170,9 +176,8 @@ const handleViewResume = async (resumeUrl) => {
                 <div className="mt-3 font-semibold flex flex-col sm:flex-row sm:items-center gap-2">
                   <span className="text-sm sm:text-base">Current Status:</span>
                   <span
-                    className={`px-2 py-1 rounded text-xs sm:text-sm w-fit ${
-                      statusColors[app.status] || "bg-gray-200 text-gray-800"
-                    }`}
+                    className={`px-2 py-1 rounded text-xs sm:text-sm w-fit ${statusColors[app.status] || "bg-gray-200 text-gray-800"
+                      }`}
                   >
                     {app.status.replace("_", " ")}
                   </span>
@@ -204,12 +209,12 @@ const handleViewResume = async (resumeUrl) => {
                   </select>
                 </div>
 
-              <button
-                onClick={() => handleViewResume(app.resumeUrl)}
-                className="inline-block mt-3 text-emerald-300 hover:underline cursor-pointer text-sm sm:text-base"
-              >
-                📄 View Resume
-              </button>
+                <button
+                  onClick={() => handleViewResume(app.resumeUrl)}
+                  className="inline-block mt-3 text-emerald-300 hover:underline cursor-pointer text-sm sm:text-base"
+                >
+                  📄 View Resume
+                </button>
 
 
               </motion.div>

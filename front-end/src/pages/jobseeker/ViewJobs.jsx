@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { api } from "../../services/api";
 
 export const ViewJobs = () => {
@@ -9,15 +8,28 @@ export const ViewJobs = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobs = async () => {
+      setLoading(true);
       try {
-        const res = await api.get("/api/applications/available", {
+        // Fetch paginated jobs
+        const res = await api.get(`/api/applications/available?page=${page}&size=9`, {
           withCredentials: true,
         });
-        setJobs(Array.isArray(res.data) ? res.data : []);
+
+        if (res.data && res.data.content) {
+          setJobs(res.data.content);
+          setTotalPages(res.data.totalPages);
+        } else if (Array.isArray(res.data)) {
+          // Fallback if backend returns list
+          setJobs(res.data);
+        } else {
+          setJobs([]);
+        }
       } catch (err) {
         console.error("Error fetching available jobs:", err);
       } finally {
@@ -25,8 +37,9 @@ export const ViewJobs = () => {
       }
     };
     fetchJobs();
-  }, []);
+  }, [page]);
 
+  // Client-side filtering/sorting logic for the CURRENT PAGE
   const filteredJobs = jobs
     .filter(
       (job) =>
@@ -115,6 +128,27 @@ export const ViewJobs = () => {
               </motion.div>
             ))
           )}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center gap-4 mt-8 pb-8 z-20 relative">
+          <button
+            disabled={page === 0 || loading}
+            onClick={() => setPage(p => p - 1)}
+            className="px-4 py-2 bg-emerald-600 text-white rounded disabled:opacity-50 hover:bg-emerald-700 transition"
+          >
+            Previous
+          </button>
+          <span className="text-white pt-2 font-mono">
+            Page {page + 1} of {totalPages || 1}
+          </span>
+          <button
+            disabled={page >= totalPages - 1 || loading}
+            onClick={() => setPage(p => p + 1)}
+            className="px-4 py-2 bg-emerald-600 text-white rounded disabled:opacity-50 hover:bg-emerald-700 transition"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>

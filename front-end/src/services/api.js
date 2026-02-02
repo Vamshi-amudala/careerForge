@@ -10,6 +10,19 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const user = JSON.parse(localStorage.getItem("user")); // Request token from storage
+    if (user && user.accessToken) {
+      config.headers.Authorization = `Bearer ${user.accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 
 const handleError = (error, defaultMsg) => {
   if (error.response) {
@@ -25,7 +38,7 @@ const handleError = (error, defaultMsg) => {
 export const registerUser = async (userData) => {
   try {
     const response = await api.post("/api/auth/register", userData);
-    return response.data; 
+    return response.data;
   } catch (error) {
     handleError(error, "Registration failed");
   }

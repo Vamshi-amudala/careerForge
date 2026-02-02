@@ -37,7 +37,7 @@ export const Register = () => {
 
     const response = await registerUser(data);
 
-    console.log("Register successful:", response);
+    // Registration successful
 
     localStorage.setItem(
       "registeredUser",
@@ -51,7 +51,7 @@ export const Register = () => {
     navigate("/login");
     reset();
   } catch (error) {
-    console.error("Register failed:", error);
+    // Registration failed - error handled by toast
 
     let message = "Something went wrong. Please try again.";
 

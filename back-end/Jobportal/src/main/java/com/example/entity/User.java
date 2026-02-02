@@ -28,7 +28,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
- 
     @Column(name = "full_name")
     private String fullName;
 
@@ -40,16 +39,16 @@ public class User {
 
     @Column(name = "education")
     private String education;
-    
+
     private String exp;
-    
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "skill")
     private List<String> skills;
-    
+
     private String resetToken;
-    
+
     @Column(name = "otp_code")
     private String otpCode;
 
@@ -59,8 +58,7 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_projects", joinColumns = @JoinColumn(name = "user_id"))
     private List<Project> projects = new ArrayList<>();
-    
-    
+
     @Column(name = "company_name")
     private String companyName;
 
@@ -70,9 +68,14 @@ public class User {
     @Column(name = "company_description", length = 1000)
     private String companyDescription;
 
-    @Column(name = "designation") 
+    @Column(name = "designation")
     private String designation;
 
     private String resumeUrl;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "resume_id")
+    @ToString.Exclude
+    private ResumeDetails resumeDetails;
 
 }

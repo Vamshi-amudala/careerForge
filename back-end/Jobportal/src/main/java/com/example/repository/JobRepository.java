@@ -7,13 +7,14 @@ import com.example.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import java.util.List;
 // import java.util.Optional;
 
 public interface JobRepository extends JpaRepository<Job, Long> {
 
-  
-	
     List<Job> findByEmployer(User employer);
 
     List<Job> findByStatus(JobStatus status);
@@ -24,7 +25,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     List<Job> findByCompany(String company);
 
-   
     @Query(value = "SELECT * FROM job ORDER BY CAST(exp AS UNSIGNED) DESC", nativeQuery = true)
     List<Job> findAllOrderByExperienceDesc();
 
@@ -37,8 +37,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     @Query(value = "SELECT * FROM job ORDER BY CAST(salary AS UNSIGNED) ASC", nativeQuery = true)
     List<Job> findAllOrderBySalaryAsc();
 
-
-   
-
+    @Query("SELECT j FROM Job j LEFT JOIN JobApplication a ON j.id = a.job.id AND a.applicant.id = :userId WHERE j.status = 'OPEN' AND a.id IS NULL")
+    Page<Job> findAvailableJobs(@Param("userId") Long userId, Pageable pageable);
 
 }

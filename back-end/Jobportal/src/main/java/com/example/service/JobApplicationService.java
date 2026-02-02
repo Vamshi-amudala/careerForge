@@ -27,11 +27,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JobApplicationService {
 
-//    @Value("${app.upload.dir:uploads/resumes/}")
-//    private String uploadDir;
-	@Autowired
-	private EmailService emailService;
-
+    // @Value("${app.upload.dir:uploads/resumes/}")
+    // private String uploadDir;
+    @Autowired
+    private EmailService emailService;
 
     private final JobApplicationRepository applicationRepository;
     private final UserRepository userRepository;
@@ -44,13 +43,18 @@ public class JobApplicationService {
         User applicant = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<Job> jobs = jobRepository.findByTitle(request.getJobTitle());
-        if (jobs.isEmpty()) {
-            throw new RuntimeException("Job not found");
+        Job job;
+        if (request.getJobId() != null) {
+            job = jobRepository.findById(request.getJobId())
+                    .orElseThrow(() -> new RuntimeException("Job not found with ID " + request.getJobId()));
+        } else {
+            List<Job> jobs = jobRepository.findByTitle(request.getJobTitle());
+            if (jobs.isEmpty()) {
+                throw new RuntimeException("Job not found");
+            }
+            job = jobs.get(0);
         }
 
-        Job job = jobs.get(0);
-        
         if (applicant.getResumeUrl() == null || applicant.getResumeUrl().isEmpty()) {
             throw new RuntimeException("Resume not uploaded. Please upload your resume before applying.");
         }
@@ -60,10 +64,11 @@ public class JobApplicationService {
         if (existingOpt.isPresent()) {
             JobApplication existing = existingOpt.get();
 
-            if (existing.getStatus() == ApplicationStatus.APPLIED || existing.getStatus() == ApplicationStatus.SELECTED) {
+            if (existing.getStatus() == ApplicationStatus.APPLIED
+                    || existing.getStatus() == ApplicationStatus.SELECTED) {
                 throw new JobApplicationExistsException("You have already applied or been selected for this job.");
             }
-            
+
             applicationRepository.delete(existing);
         }
 
@@ -80,42 +85,43 @@ public class JobApplicationService {
         return savedApp;
     }
 
+    // public JobApplicationResponse applyForJobWithFile(JobApplicationRequest
+    // request, MultipartFile resumeFile) {
+    // String filename = saveResumeFile(resumeFile);
+    // request.setResumeUrl("/uploads/resumes/" + filename);
+    // return applyForJob(request);
+    // }
 
+    // public JobApplicationResponse applyForJobWithFile(JobApplicationRequest
+    // request, MultipartFile resumeFile) {
+    // String filename = saveResumeFile(resumeFile);
+    // request.setResumeUrl("/uploads/resumes/" + filename);
+    // JobApplication savedApp = applyForJob(request);
+    // return toResponse(savedApp);
+    // }
 
-//    public JobApplicationResponse applyForJobWithFile(JobApplicationRequest request, MultipartFile resumeFile) {
-//        String filename = saveResumeFile(resumeFile);
-//        request.setResumeUrl("/uploads/resumes/" + filename);
-//        return applyForJob(request);
-//    }
-    
-//    public JobApplicationResponse applyForJobWithFile(JobApplicationRequest request, MultipartFile resumeFile) {
-//        String filename = saveResumeFile(resumeFile);
-//        request.setResumeUrl("/uploads/resumes/" + filename);
-//        JobApplication savedApp = applyForJob(request);
-//        return toResponse(savedApp);
-//    }
-
-
-//    private String saveResumeFile(MultipartFile file) {
-//        try {
-//            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-//            Path uploadPath = Paths.get(uploadDir);
-//
-//            if (!Files.exists(uploadPath)) {
-//                Files.createDirectories(uploadPath);
-//            }
-//
-//            Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
-//            return filename;
-//        } catch (IOException e) {
-//            throw new RuntimeException("Failed to save resume file", e);
-//        }
-//    }
+    // private String saveResumeFile(MultipartFile file) {
+    // try {
+    // String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    // Path uploadPath = Paths.get(uploadDir);
+    //
+    // if (!Files.exists(uploadPath)) {
+    // Files.createDirectories(uploadPath);
+    // }
+    //
+    // Files.copy(file.getInputStream(), uploadPath.resolve(filename),
+    // StandardCopyOption.REPLACE_EXISTING);
+    // return filename;
+    // } catch (IOException e) {
+    // throw new RuntimeException("Failed to save resume file", e);
+    // }
+    // }
 
     private void sendConfirmationEmail(User applicant, Job job) {
         String subject = "Job Application Submitted";
         String htmlContent = "<p>Dear " + applicant.getFullName() + ",</p>"
-                + "<p>Thank you for your interest in the position of <strong>" + job.getTitle() + "</strong> at <strong>" + job.getCompany() + "</strong>.</p>"
+                + "<p>Thank you for your interest in the position of <strong>" + job.getTitle()
+                + "</strong> at <strong>" + job.getCompany() + "</strong>.</p>"
                 + "<p>We have received your application and our recruitment team is now reviewing your profile carefully. "
                 + "You can expect to hear from us within the next few days regarding the status of your application.</p>"
                 + "<p>In the meantime, we encourage you to keep an eye on your inbox for any updates or requests for additional information.</p>"
@@ -129,11 +135,10 @@ public class JobApplicationService {
         try {
             File attachment = generateJobApplicationFile(applicant, job);
             email.sendApplicationConfirmationEmail(
-                applicant.getEmail(),
-                subject,
-                htmlContent,
-                attachment
-            );
+                    applicant.getEmail(),
+                    subject,
+                    htmlContent,
+                    attachment);
         } catch (Exception e) {
             System.out.println("❌ Email sending failed: " + e.getMessage());
         }
@@ -181,11 +186,10 @@ public class JobApplicationService {
 
         return resp;
     }
-    
-    
+
     public void updateJobStatus(Long id, ApplicationStatus status) {
         JobApplication app = applicationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new RuntimeException("Application not found"));
 
         if (app.getStatus() == ApplicationStatus.WITHDRAWN || app.getStatus() == ApplicationStatus.REJECTED) {
             throw new IllegalStateException("Cannot update application that is already " + app.getStatus());
@@ -196,14 +200,14 @@ public class JobApplicationService {
 
         // Optional: Email notification
         if (status == ApplicationStatus.SELECTED) {
-            email.sendSelectedEmail(app.getApplicant().getEmail(), app.getJob().getTitle(), app.getApplicant().getFullName());
+            email.sendSelectedEmail(app.getApplicant().getEmail(), app.getJob().getTitle(),
+                    app.getApplicant().getFullName());
         }
     }
 
-    
     public JobApplicationResponse withdrawApplication(Long id, String email) {
         JobApplication app = applicationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new RuntimeException("Application not found"));
 
         if (!app.getApplicant().getEmail().equalsIgnoreCase(email)) {
             throw new RuntimeException("You are not authorized to withdraw this application");
@@ -216,19 +220,13 @@ public class JobApplicationService {
         app.setStatus(ApplicationStatus.WITHDRAWN);
         applicationRepository.save(app);
 
-
         emailService.sendApplicationStatusEmail(
-            app.getApplicant().getEmail(),
-            app.getJob().getTitle(),
-            app.getApplicant().getFullName(), 
-            ApplicationStatus.WITHDRAWN
-        );
+                app.getApplicant().getEmail(),
+                app.getJob().getTitle(),
+                app.getApplicant().getFullName(),
+                ApplicationStatus.WITHDRAWN);
 
         return toResponse(app);
     }
-
-
-
-
 
 }
