@@ -74,7 +74,7 @@
 ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
 
 ### Infrastructure & DevOps
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
@@ -109,7 +109,7 @@ graph TB
     end
     
     subgraph "Data Layer"
-        J[(MySQL - Railway)]
+        J[(PostgreSQL - Render)]
     end
     
     A --> D
@@ -139,7 +139,7 @@ graph TB
 ☕ Java 21+
 📦 Node.js 18+
 🐳 Docker (optional)
-🗃️ MySQL
+🗃️ PostgreSQL
 ```
 
 ### 🔧 Installation
